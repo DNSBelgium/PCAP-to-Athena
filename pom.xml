@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>be.dnsbelgium.data</groupId>
-    <artifactId>pcap-parquet-maker</artifactId>
+    <artifactId>pcap-to-athena</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>pcap-parquet-maker</name>
-    <description>Demo project for Spring Boot</description>
+    <name>PCAP to Athena</name>
+    <description>Convert PCAP files to Parquet format and make them available via Amazon Athena.</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
