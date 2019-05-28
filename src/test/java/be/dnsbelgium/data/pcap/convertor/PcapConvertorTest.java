@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -96,6 +97,8 @@ public class PcapConvertorTest {
 
     FileHelper fileHelper = new FileHelper();
     List<File> files = fileHelper.findRecursively(outputFolder, "parquet");
+    files.sort(Comparator.comparing(File::getAbsolutePath));
+
     for (File file : files) {
       logger.info("file = {}", file);
       tempFiles.add(file);
@@ -105,7 +108,7 @@ public class PcapConvertorTest {
     String file1 = files.get(0).getAbsolutePath().replace(outputFolder.getAbsolutePath(), "");
     String file2 = files.get(1).getAbsolutePath().replace(outputFolder.getAbsolutePath(), "");
 
-    logger.info("file = {}", file1);
+    logger.info("file1 = {}", file1);
     logger.info("file2 = {}", file2);
 
     assertTrue(file1.startsWith("/year=2005/month=03/day=30/server=ns1.dns.be/"));
