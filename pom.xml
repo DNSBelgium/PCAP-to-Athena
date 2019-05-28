@@ -10,6 +10,30 @@
 
     <name>PCAP to Athena</name>
     <description>Convert PCAP files to Parquet format and make them available via Amazon Athena.</description>
+    <url>https://github.com/DNSBelgium/PCAP-to-Athena</url>
+
+    <licenses>
+      <license>
+        <name>GNU General Public License (GPL), Version 3</name>
+        <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+
+    <developers>
+       <developer>
+         <name>DNS Belgium Engineering</name>
+         <email>engineeringd@dnsbelgium.be</email>
+         <organization>DNS Belgium</organization>
+         <organizationUrl>https://www.dnsbelgium.be</organizationUrl>
+       </developer>
+     </developers>
+
+    <scm>
+      <connection>scm:git:git://github.com/DNSBelgium/PCAP-to-Athena.git</connection>
+      <developerConnection>scm:git:ssh://github.com:DNSBelgium/PCAP-to-Athena.git</developerConnection>
+      <url>https://github.com/DNSBelgium/PCAP-to-Athena/tree/master</url>
+    </scm>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
