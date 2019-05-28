@@ -9,11 +9,6 @@ Datamodel
 
 For the columns used in the parquet files, see http://entrada.sidnlabs.nl/docs/concepts/data_model/#dns
 
-Build
-=====
-
-The project uses Maven for building sources. You can `./mvnw clean package` to build and package to a jar. The jar will be located in `target/`.
-
 Configuration
 =============
 
@@ -63,6 +58,15 @@ AWS Credentials
 
 You need a credentials file: `~/.aws/credentials` with a `[default]` profile containing a valid pair of aws_access_key_id and aws_secret_access_key.
 Be sure to have the correct permissions for S3 and Athena.
+
+Build
+=====
+
+The project uses Maven for building sources. Once Maxmind DB and third party libraries are downloaded, you can run
+```bash
+./mvnw validate package
+```
+to install jar in your local maven repository, and build and package sources to a jar. The jar will be located in `target/`.
 
 Tests
 =====
