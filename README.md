@@ -4,6 +4,11 @@ PCAP to Athena
 The goal of this project is to convert PCAP files into Parquet format and make them available via Amazon Athena.
 The project uses libraries from Entrada and also contains code which was copied from Entrada and modified where needed.
 
+Disclaimer
+==========
+
+PCAP to Athena is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. The PCAP to Athena code is the result of a proof-of-concept. It is not guaranteed to work and is not ready for production use.
+
 Datamodel
 =========
 
