@@ -7,3 +7,16 @@ target/*
 .idea
 .idea/*
 .mvn/wrapper/maven-wrapper.jar
+
+spring-shell.log
+/*.csv
+
+lib/AthenaJDBC42_2.0.7.jar
+lib/entrada
+
+resolvers/
+downloaded-pcaps/
+pcap-decoder-state/
+parquet/
+athena-logs/
+maxmind/*.mmdb
