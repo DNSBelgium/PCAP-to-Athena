@@ -369,6 +369,7 @@ public class PcapFileReader extends AbstractRunnable {
    *
    * @param in       The input stream to wrap with a decompressor
    * @param filename The filename from which we guess the correct decompressor
+   * @param bufSize  The input buffer size in bytes. Used if pcap is gzip'ed.
    * @return the compressor stream wrapped around the inputstream. If no decompressor is found,
    * returns the inputstream as-is
    */

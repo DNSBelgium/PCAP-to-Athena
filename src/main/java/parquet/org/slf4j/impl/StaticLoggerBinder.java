@@ -11,7 +11,7 @@ import parquet.org.slf4j.helpers.NOPLoggerFactory;
  *
  * Therefor we add this class ourselves. It does not matter what the class does, just that it exists.
  *
- * Sigh, java & logging ...
+ * Sigh, java &amp; logging ...
  *
  */
 @SuppressWarnings("unused")

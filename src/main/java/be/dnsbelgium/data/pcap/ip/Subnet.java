@@ -32,7 +32,7 @@ public class Subnet
   final private BigInteger bigMask;
   final private BigInteger bigSubnetMasked;
 
-  /** For use via format "192.168.0.0/24" or "2001:db8:85a3:880:0:0:0:0/57" */
+  /* For use via format "192.168.0.0/24" or "2001:db8:85a3:880:0:0:0:0/57" */
   public Subnet( final InetAddress subnetAddress, final int bits )
   {
     this.bytesSubnetCount = subnetAddress.getAddress().length; // 4 or 16
@@ -40,7 +40,7 @@ public class Subnet
     this.bigSubnetMasked = new BigInteger( subnetAddress.getAddress() ).and( this.bigMask );
   }
 
-  /** For use via format "192.168.0.0/255.255.255.0" or single address */
+  /* For use via format "192.168.0.0/255.255.255.0" or single address */
   public Subnet( final InetAddress subnetAddress, final InetAddress mask )
   {
     this.bytesSubnetCount = subnetAddress.getAddress().length;

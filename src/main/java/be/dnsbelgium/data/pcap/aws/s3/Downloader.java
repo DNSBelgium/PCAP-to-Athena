@@ -186,7 +186,7 @@ public class Downloader {
    * @param objectSummary the S3ObjectSummary
    * @param localFile the downloaded path
    * @return localFile
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    */
   public File download(S3ObjectSummary objectSummary, File localFile) throws IOException {
     File folder = localFile.getParentFile();

@@ -48,8 +48,9 @@ public class BulkUploader {
   }
 
   /**
-   * Uploads all locally found parquet files for given server
+   * Uploads all locally found parquet files for given server to a given bucket
    * @param server the Server for which we have to find and upload files
+   * @param bucketName the name of the bucket were files will be uploaded
    *
    * Unused since we now plan to process files one by one instead of per server per day
    */

@@ -63,6 +63,8 @@ public class FileHelper {
    * It does not create this subfolder.
    * Moved to separate class for easier mocking and testing.
    *
+   * @param folder the parent folder.
+   *
    * @return a File object representing a randomly named subfolder within given folder.
    */
   public File uniqueSubFolder(String folder) {
