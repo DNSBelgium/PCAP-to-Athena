@@ -9,7 +9,7 @@ before_install:
   - lib/download_libs.sh
   - maxmind/download_maxmind_geo_ip_db.sh
   - ./mvnw install:install-file -DgroupId=com.simba.athena -DartifactId=jdbc42-driver -Dversion=2.0.7 -Dpackaging=jar -Dfile=lib/AthenaJDBC42_2.0.7.jar
-  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --pinentry-mode loopback --import
 
 script:
   - ./mvnw test -B
