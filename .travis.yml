@@ -28,8 +28,9 @@ deploy:
   - provider: script
     skip_cleanup: true
     script:
-      - mvn versions:set -DnewVersion=$TRAVIS_TAG
-      - mvn deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
+      - mvn release:prepare --settings .maven.xml -DskipTests=true -B -U -Prelease
+      - mvn release:perform --settings .maven.xml -DskipTests=true -B -U -Prelease
+      - mvn release:update-versions -DautoVersionSubmodules=true -B
     on:
       tags: true
 
