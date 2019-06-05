@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
