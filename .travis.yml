@@ -2,8 +2,9 @@ language: java
 jdk: openjdk8
 
 before_install:
-  - bash lib/download_libs.sh
-  - bash maxmind/download_maxmind_geo_ip_db.sh
+  - lib/download_libs.sh
+  - maxmind/download_maxmind_geo_ip_db.sh
+  - ./mvnw install:install-file -DgroupId=com.simba.athena -DartifactId=jdbc42-driver -Dversion=2.0.7 -Dpackaging=jar -Dfile=lib/AthenaJDBC42_2.0.7.jar
 
 before_deploy:
   - mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
