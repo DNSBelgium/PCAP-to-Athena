@@ -44,6 +44,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PcapToAthenaApplication.class)
 @TestPropertySource(locations = "classpath:test-application.properties")
+@IfProfileValue(name="test-groups", value= "aws-integration-tests")
 public class GeoLookupUtilTest {
 
   private GeoLookupUtil geoLookup;

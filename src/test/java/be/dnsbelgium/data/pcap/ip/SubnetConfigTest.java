@@ -33,6 +33,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SubnetConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations="classpath:test-application.properties")
+@IfProfileValue(name="test-groups", value= "aws-integration-tests")
 public class SubnetConfigTest {
 
   @Autowired
