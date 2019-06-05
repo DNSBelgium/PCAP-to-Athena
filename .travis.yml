@@ -12,5 +12,6 @@ script:
   - ./run-integration-tests.sh
 
 deploy:
+  skip_cleanup: true
   provider: script
   script: mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
