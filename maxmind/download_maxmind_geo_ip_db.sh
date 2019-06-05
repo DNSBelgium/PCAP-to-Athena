@@ -25,8 +25,10 @@
 #
 ############################################################
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 MAXMIND_TEMP_DIR=$TMPDIR/maxmind
-MAXMIND_DEST_DIR=$(pwd)
+MAXMIND_DEST_DIR=$DIR
 
 #database are updated on the first Tuesday of each month.
 COUNTRY_URL=http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz

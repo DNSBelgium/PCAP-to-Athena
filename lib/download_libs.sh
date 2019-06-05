@@ -1,5 +1,9 @@
 #! /usr/bin/env bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+PREVIOUS_DIR="$(pwd)"
+cd $DIR
+
 # JDBC Athena driver
 curl https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC_2.0.7/AthenaJDBC42_2.0.7.jar --output AthenaJDBC42_2.0.7.jar
 
@@ -17,3 +21,5 @@ cd ../
 # pcaplib4java
 git checkout $BRANCH -- pcaplib4java
 cd pcaplib4java && mvn clean install
+
+cd $PREVIOUS_DIR
