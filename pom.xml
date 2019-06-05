@@ -31,7 +31,7 @@
 
     <scm>
         <connection>scm:git:git://github.com/DNSBelgium/PCAP-to-Athena.git</connection>
-        <developerConnection>scm:git:ssh://github.com/DNSBelgium/PCAP-to-Athena.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/Kent1/PCAP-to-Athena.git</developerConnection>
         <url>https://github.com/DNSBelgium/PCAP-to-Athena/tree/master</url>
     </scm>
 
