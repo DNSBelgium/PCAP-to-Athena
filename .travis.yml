@@ -1,6 +1,10 @@
 language: java
 jdk: openjdk8
 
+cache:
+  directories:
+  - $HOME/.m2
+
 before_install:
   - lib/download_libs.sh
   - maxmind/download_maxmind_geo_ip_db.sh
@@ -14,4 +18,4 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
+  script: mvn deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
