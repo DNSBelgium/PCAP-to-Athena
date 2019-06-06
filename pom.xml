@@ -30,9 +30,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/DNSBelgium/PCAP-to-Athena.git</connection>
-        <developerConnection>scm:git:https://github.com/Kent1/PCAP-to-Athena.git</developerConnection>
-        <url>https://github.com/DNSBelgium/PCAP-to-Athena/tree/master</url>
+        <connection>scm:git:git://github.com/Kent1/PCAP-to-Athena.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/Kent1/PCAP-to-Athena.git</developerConnection>
+        <url>https://github.com/DNSBelgium/PCAP-to-Athena</url>
     </scm>
 
     <issueManagement>
@@ -354,6 +354,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
             </plugin>
 
             <plugin>
