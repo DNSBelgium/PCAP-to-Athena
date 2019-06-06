@@ -4,7 +4,7 @@
 
     <groupId>be.dnsbelgium.data</groupId>
     <artifactId>pcap-to-athena</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <packaging>jar</packaging>
 
     <name>PCAP to Athena</name>
@@ -32,7 +32,7 @@
         <connection>scm:git:git://github.com/Kent1/PCAP-to-Athena.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/Kent1/PCAP-to-Athena.git</developerConnection>
         <url>https://github.com/DNSBelgium/PCAP-to-Athena</url>
-      <tag>v0.0.1</tag>
+      <tag>v0.0.2</tag>
   </scm>
 
     <issueManagement>
