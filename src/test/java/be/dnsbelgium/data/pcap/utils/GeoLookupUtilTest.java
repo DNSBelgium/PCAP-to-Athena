@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -44,6 +45,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PcapToAthenaApplication.class)
 @TestPropertySource(locations = "classpath:test-application.properties")
+@IfProfileValue(name="test-groups", value= "aws-integration-tests")
 public class GeoLookupUtilTest {
 
   private GeoLookupUtil geoLookup;

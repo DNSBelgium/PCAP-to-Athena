@@ -20,6 +20,7 @@
 package be.dnsbelgium.data.pcap.utils;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -47,6 +48,7 @@ public class FileHelperTest {
   }
 
   @Test
+  @Ignore
   public void testFreeDiskSpaceInBytes() {
     long free = fileHelper.getFreeDiskSpaceInBytes(tempFolder.getPath());
     logger.info("free = {}", free);

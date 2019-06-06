@@ -25,8 +25,9 @@
 #
 ############################################################
 
-MAXMIND_TEMP_DIR=$TMPDIR/maxmind
-MAXMIND_DEST_DIR=$(pwd)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+PREVIOUS_DIR="$(pwd)"
+cd $DIR
 
 #database are updated on the first Tuesday of each month.
 COUNTRY_URL=http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz
@@ -35,14 +36,6 @@ CITY_URL=https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.g
 
 
 echo "[$(date)] : start update of Maxmind databases"
-if [ ! -d $MAXMIND_TEMP_DIR ];
-then
-    echo "[$(date)] : create directory $MAXMIND_TEMP_DIR"
-    mkdir -p $MAXMIND_TEMP_DIR
-fi
-
-#goto download location
-cd $MAXMIND_TEMP_DIR
 
 #remove old databases
 rm -f *.dat
@@ -59,9 +52,10 @@ curl -sH 'Accept-encoding: gzip' $CITY_URL | tar xvz
 mv GeoLite2-City_*/GeoLite2-City.mmdb .
 rm -rf GeoLite2-City_*
 
-mv $MAXMIND_TEMP_DIR/* $MAXMIND_DEST_DIR/
-
 echo "[$(date)] : Maxmind update done"
 echo "[$(date)] : Files in $MAXMIND_DEST_DIR : "
 ls -lh $MAXMIND_DEST_DIR
 echo "[$(date)] : =====  done  ==="
+
+cd $PREVIOUS_DIR
+
