@@ -6,9 +6,6 @@ cache:
   - $HOME/.m2
 
 before_install:
-  - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "Travis CI"
-
   - lib/download_libs.sh
   - maxmind/download_maxmind_geo_ip_db.sh
   - ./mvnw install:install-file -DgroupId=com.simba.athena -DartifactId=jdbc42-driver -Dversion=2.0.7 -Dpackaging=jar -Dfile=lib/AthenaJDBC42_2.0.7.jar
@@ -19,21 +16,7 @@ script:
   - ./run-integration-tests.sh
 
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: mvn deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
-    on:
-      tags: false
+  provider: script
+  skip_cleanup: true
+  script: mvn deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
 
-  - provider: script
-    skip_cleanup: true
-    script:
-      - mvn release:prepare --settings .maven.xml -DskipTests=true -B -U -Prelease
-      - mvn release:perform --settings .maven.xml -DskipTests=true -B -U -Prelease
-      - mvn release:update-versions -DautoVersionSubmodules=true -B
-    on:
-      tags: true
-
-after_success:
-  - git add -u
-  - git commit --message "Release version $TRAVIS_TAG"
