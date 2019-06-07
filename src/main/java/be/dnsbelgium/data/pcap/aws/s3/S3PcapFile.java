@@ -25,10 +25,7 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,8 +39,7 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
   private String server;
   private String fileName;
   private boolean compressed;
-  private Instant instant;
-  private LocalDate date;
+  private LocalDateTime dateTime;
   private String iface;
   private String sequenceNr;
   private File localFile = null;
@@ -95,7 +91,7 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
       String dd_mm_yyyy = matcher.group("ddmmyyyy");
       LocalDate date = LocalDate.parse(dd_mm_yyyy, DateTimeFormatter.ofPattern("dd'-'MM'-'yyyy"));
 
-      Instant instant = extractInstance(matcher);
+      LocalDateTime dateTime = extractInstance(matcher);
 
       // zaventem.dns.be/15-11-2018/1542319052_zaventem.dns.be.em3.pcap5554_DONE.gz]
       String fileNamePart = matcher.group("filenamePart");
@@ -105,7 +101,7 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
         iface = filenameMatcher.group("interface");
         seqNr = filenameMatcher.group("sequenceNr");
       }
-      return new S3PcapFile(summary, server, fileName, compressed, instant, date, iface, seqNr);
+      return new S3PcapFile(summary, server, fileName, compressed, dateTime, iface, seqNr);
 
     } else if (matcherWithPartitions.find()) {
 
@@ -118,12 +114,16 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
       String dd = matcherWithPartitions.group("dd");
       LocalDate date = LocalDate.parse(yyyy + mm + dd, DateTimeFormatter.BASIC_ISO_DATE);
 
-      // TODO quentinl Check the need to use Instant (iso LocalDateTime) after removing the old pattern
-      Instant instant = extractInstance(matcherWithPartitions.group("epoch"));
+      String epoch = matcherWithPartitions.group("epoch");
+      LocalDateTime dateTime = LocalDateTime.parse(epoch, DateTimeFormatter.ofPattern("yyyy'_'MM'_'dd'_'HHmmss"));
+      if (!dateTime.toLocalDate().equals(date)) {
+        logger.error("LocalDateTime in the filename does not match LocalDate of folder structure");
+        return null;
+      }
 
       iface = matcherWithPartitions.group("interface");
 
-      return new S3PcapFile(summary, server, fileName, compressed, instant, date, iface, null);
+      return new S3PcapFile(summary, server, fileName, compressed, dateTime, iface, null);
 
     } else {
       logger.warn("S3 key {} does not match regex {} nor {} => return null", key, REGEX, REGEX_WITH_PARTITIONS);
@@ -131,25 +131,19 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
     }
   }
 
-  private static Instant extractInstance(Matcher matcher) {
+  private static LocalDateTime extractInstance(Matcher matcher) {
+    // Timestamp in filename are local
     String epoch = matcher.group("epoch");
     long epochSeconds = Integer.parseInt(epoch);
-    return Instant.ofEpochSecond(epochSeconds);
+    return Instant.ofEpochSecond(epochSeconds).atZone(ZoneId.of("Europe/Brussels")).toLocalDateTime();
   }
 
-  private static Instant extractInstance(String epoch) {
-    return LocalDateTime
-        .parse(epoch, DateTimeFormatter.ofPattern("yyyy'_'MM'_'dd'_'HHmmss"))
-        .toInstant(ZoneOffset.UTC);
-  }
-
-  private S3PcapFile(S3ObjectSummary objectSummary, String server, String fileName, boolean compressed, Instant instant, LocalDate date, String iface, String sequenceNr) {
+  private S3PcapFile(S3ObjectSummary objectSummary, String server, String fileName, boolean compressed, LocalDateTime dateTime, String iface, String sequenceNr) {
     this.objectSummary = objectSummary;
     this.server = server;
     this.fileName = fileName;
     this.compressed = compressed;
-    this.instant = instant;
-    this.date = date;
+    this.dateTime = dateTime;
     this.iface = iface;
     this.sequenceNr = sequenceNr;
   }
@@ -174,7 +168,12 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
 
   @Nullable
   public LocalDate getDate() {
-    return date;
+    return dateTime.toLocalDate();
+  }
+
+  @Nullable
+  public LocalDateTime getDateTime() {
+    return dateTime;
   }
 
   @Nullable
@@ -191,25 +190,20 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
     return compressed;
   }
 
-  @Nullable
-  public Instant getInstant() {
-    return instant;
-  }
-
   public S3ObjectSummary getObjectSummary() {
     return objectSummary;
   }
 
   @Override
   public int compareTo(S3PcapFile o) {
-    // first compare server names then interface names and then the instants
+    // first compare server names then interface names and then the dates
     int s = server.compareTo(o.server);
     if (s == 0) {
       if (iface != null) {
         s = iface.compareTo(o.iface);
       }
       if (s == 0) {
-        return instant.compareTo(o.instant);
+        return dateTime.compareTo(o.dateTime);
       }
     }
     return s;
@@ -228,7 +222,7 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
         "server='" + server + '\'' +
         ", iface='" + iface + '\'' +
         ", fileName='" + fileName + '\'' +
-        ", date=" + date +
+        ", date=" + getDate() +
         '}';
   }
 
@@ -253,10 +247,9 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
     newKey.append("server=");
     newKey.append(server.getFullname());
 
-    LocalDate date = getDate();
-    if (date != null) {
+    if (dateTime != null) {
       newKey.append(String.format("/year=%04d/month=%02d/day=%02d/%s",
-          date.getYear(), date.getMonthValue(), this.date.getDayOfMonth(), getFileName()));
+          dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), getFileName()));
     } else {
       logger.error("PCAP file has no day-month-year : {}", this);
       newKey.append("/").append(getKey());

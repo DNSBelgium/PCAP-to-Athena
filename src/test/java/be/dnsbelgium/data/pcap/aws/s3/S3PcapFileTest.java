@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,15 +78,15 @@ public class S3PcapFileTest {
 
   @Test
   public void compressed() {
-    String key = "amsterdam1.dns.be/25-12-2017/1527804007_amsterdam1.dns.be.p2p2.pcap0049_DONE.gz";
+    String key = "amsterdam1.dns.be/25-12-2017/1514167200_amsterdam1.dns.be.p2p2.pcap0049_DONE.gz";
     S3ObjectSummary summary = new S3ObjectSummary();
     summary.setBucketName("random");
     summary.setKey(key);
     S3PcapFile file = S3PcapFile.parse(summary);
     assertEquals("amsterdam1.dns.be", file.getServer());
     assertEquals(LocalDate.of(2017, 12, 25), file.getDate());
-    assertEquals("1527804007_amsterdam1.dns.be.p2p2.pcap0049_DONE.gz", file.getFileName());
-    assertEquals(1527804007, file.getInstant().getEpochSecond());
+    assertEquals(LocalDateTime.of(2017, 12, 25, 3, 0), file.getDateTime());
+    assertEquals("1514167200_amsterdam1.dns.be.p2p2.pcap0049_DONE.gz", file.getFileName());
     assertEquals(summary, file.getObjectSummary());
     assertTrue(file.isCompressed());
   }
@@ -149,9 +148,7 @@ public class S3PcapFileTest {
     logger.info("file = {}", file);
     assertEquals(LocalDate.of(2017, 12, 25), file.getDate());
     assertEquals("2017_12_25_012345_server.blabla.be_interface.pcap.gz", file.getFileName());
-    assertEquals(
-        LocalDateTime.of(file.getDate(), LocalTime.of(01, 23, 45)).toEpochSecond(ZoneOffset.UTC),
-        file.getInstant().getEpochSecond());
+    assertEquals(LocalDateTime.of(file.getDate(), LocalTime.of(01, 23, 45)), file.getDateTime());
     assertEquals("interface", file.getNetworkInterface());
     assertEquals(null, file.getSequenceNr());
     String improvedKey = file.improvedKey("prefix", new ServerInfo("dummy1.dns.com"));
@@ -164,10 +161,10 @@ public class S3PcapFileTest {
 
   @Test
   public void improvedKey() {
-    S3PcapFile file1 = makeFile("some.server.com/25-12-2017/123_yyyy.zzz_DONE");
+    S3PcapFile file1 = makeFile("some.server.com/25-12-2017/1514167200_yyyy.zzz_DONE");
     String improved = file1.improvedKey("prefix", new ServerInfo("dummy1.dns.com"));
     logger.info("improved = {}", improved);
-    assertEquals("prefix/server=dummy1.dns.com/year=2017/month=12/day=25/123_yyyy.zzz_DONE", improved);
+    assertEquals("prefix/server=dummy1.dns.com/year=2017/month=12/day=25/1514167200_yyyy.zzz_DONE", improved);
   }
 
 }
