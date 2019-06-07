@@ -60,6 +60,7 @@ public class ConvertorServiceUnitTest {
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private final static String PCAP_BUCKET = "s3-bucket-with-pcaps";
+  private final static String PCAP_PREFIX = "incoming-pcap";
   private final static String PARQUET_BUCKET = "s3-bucket-with-parquet-files";
   private final static String ARCHIVE_BUCKET = "s3-bucket-with-archived-pcap-files";
   private final static String ARCHIVE_PREFIX = "archive";
@@ -94,8 +95,8 @@ public class ConvertorServiceUnitTest {
     outputFolder = temporaryFolder.newFolder("parquet-output");
     downloadFolder = temporaryFolder.newFolder("pcap-downloads");
 
-    summary1 = makeSummary(PCAP_BUCKET, "dummy.example.com/26-11-2018/12345_dummy.pcap.gz_DONE");
-    summary2 = makeSummary(PCAP_BUCKET, "dummy.example.com/26-11-2018/45678_dummy.pcap.gz_DONE");
+    summary1 = makeSummary(PCAP_BUCKET, PCAP_PREFIX, "dummy.example.com/26-11-2018/12345_dummy.pcap.gz_DONE");
+    summary2 = makeSummary(PCAP_BUCKET, PCAP_PREFIX, "dummy.example.com/26-11-2018/45678_dummy.pcap.gz_DONE");
 
     pcapFile1 = S3PcapFile.parse(summary1);
     pcapFile2 = S3PcapFile.parse(summary2);
@@ -116,6 +117,7 @@ public class ConvertorServiceUnitTest {
 
     ConvertorConfig config = new ConvertorConfig(
         PCAP_BUCKET,
+        PCAP_PREFIX,
         PARQUET_BUCKET,
         ARCHIVE_BUCKET,
         ARCHIVE_PREFIX,
@@ -141,17 +143,17 @@ public class ConvertorServiceUnitTest {
   }
 
   @SuppressWarnings("SameParameterValue")
-  private S3ObjectSummary makeSummary(String bucket, String key) {
+  private S3ObjectSummary makeSummary(String bucket, String prefix, String key) {
     S3ObjectSummary summary = new S3ObjectSummary();
     summary.setBucketName(bucket);
-    summary.setKey(key);
+    summary.setKey(prefix + "/" + key);
     return summary;
   }
 
   @Test
   @Ignore // TODO: rework this test
   public void uploadFails() throws IOException, InterruptedException {
-    S3ObjectSummary summary = makeSummary(PCAP_BUCKET, "dummy/25-11-2018/12345_dummy.pcap.gz_DONE");
+    S3ObjectSummary summary = makeSummary(PCAP_BUCKET, PCAP_PREFIX, "dummy/25-11-2018/12345_dummy.pcap.gz_DONE");
     List<S3PcapFile> pcapFiles = Lists.newArrayList(S3PcapFile.parse(summary));
 
     when(downloader.download(summary, downloadFolder)).thenReturn(new File(downloadFolder, summary.getKey()));
@@ -191,8 +193,8 @@ public class ConvertorServiceUnitTest {
 
   @Test
   public void conversionFails() throws IOException, InterruptedException {
-    when(downloader.listFilesIn(PCAP_BUCKET, "dummy.example.com/25-11-2018/")).thenReturn(pcapFiles);
-    when(downloader.listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=25/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "dummy.example.com/25-11-2018/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=25/")).thenReturn(pcapFiles);
 
     ConversionJob job = new ConversionJob(serverInfo, day_2018_11_25, outputFolder);
 
@@ -213,7 +215,7 @@ public class ConvertorServiceUnitTest {
     convertorService.execute(job);
     assertEquals(ConversionJob.Status.FAILED, job.getStatus());
 
-    verify(downloader).listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=25/");
+    verify(downloader).listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=25/");
     verify(downloader).download(summary1, pcapFile1.getLocalFile());
     verify(downloader).download(summary2, pcapFile2.getLocalFile());
     verify(uploader, never()).upload(anyString(), anyString(), any(File.class));
@@ -239,15 +241,15 @@ public class ConvertorServiceUnitTest {
 
   @Test
   public void findPcapFiles() {
-    when(downloader.listFilesIn(PCAP_BUCKET, "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
-    when(downloader.listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
 
     ConversionJob job = new ConversionJob(serverInfo, day_2018_11_26, outputFolder);
     job.logStatus();
     assertEquals(ConversionJob.Status.INITIAL, job.getStatus());
 
     convertorService.findPcapFiles(job);
-    verify(downloader).listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=26/");
+    verify(downloader).listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=26/");
 
     assertEquals(ConversionJob.Status.PCAP_FILES_LISTED, job.getStatus());
     assertEquals(2, job.getPcapFiles().size());
@@ -259,8 +261,8 @@ public class ConvertorServiceUnitTest {
   @Test
   public void downloadPcapFiles() throws IOException {
     // This test supports both old-style as new-style folder format
-    when(downloader.listFilesIn(PCAP_BUCKET, "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
-    when(downloader.listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
 
     job.logStatus();
     convertorService.findPcapFiles(job);
@@ -290,8 +292,8 @@ public class ConvertorServiceUnitTest {
 
   @Test
   public void downloadPcapFilesFails() throws IOException {
-    when(downloader.listFilesIn(PCAP_BUCKET, "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
-    when(downloader.listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
 
     job.logStatus();
     convertorService.findPcapFiles(job);
@@ -407,8 +409,8 @@ public class ConvertorServiceUnitTest {
 
   @Test
   public void execute() throws IOException, InterruptedException {
-    when(downloader.listFilesIn(PCAP_BUCKET, "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
-    when(downloader.listFilesIn(PCAP_BUCKET, "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "dummy.example.com/26-11-2018/")).thenReturn(pcapFiles);
+    when(downloader.listFilesIn(PCAP_BUCKET, PCAP_PREFIX + "/" + "server=dummy.example.com/year=2018/month=11/day=26/")).thenReturn(pcapFiles);
     when(downloader.download(summary1, downloadFolder)).thenReturn(simulateDownload(pcapFile1));
     when(downloader.download(summary2, downloadFolder)).thenReturn(simulateDownload(pcapFile2));
     when(fileHelper.uniqueSubFolder(anyString())).thenReturn(outputFolder);

@@ -37,20 +37,21 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ConvertorConfig {
 
   private final boolean pcapFoldersNewStyle;
-  private String parquetOutputFolder;
-  private String serverSuffix;
-  private boolean deletePcapAfterConversion;
-  private boolean deleteParquetAfterUpload;
-  private String pcapBucketName;
-  private String parquetBucketName;
-  private String archiveBucketName;
+  private final String pcapBucketPrefix;
+  private final String parquetOutputFolder;
+  private final String serverSuffix;
+  private final boolean deletePcapAfterConversion;
+  private final boolean deleteParquetAfterUpload;
+  private final String pcapBucketName;
+  private final String parquetBucketName;
+  private final String archiveBucketName;
   private final String archivePrefix;
   private final String parquetPrefix;
   private final String parquetRepoName;
   private final String pcapDownloadFolder;
-  private List<String> serverNames;
-  private String athenaDatabaseName;
-  private String athenaTableName;
+  private final List<String> serverNames;
+  private final String athenaDatabaseName;
+  private final String athenaTableName;
 
 
   private static final Logger logger = getLogger(ConvertorConfig.class);
@@ -58,6 +59,7 @@ public class ConvertorConfig {
   @Autowired
   public ConvertorConfig(
       @Value("${pcap.bucket.name}") String pcapBucketName,
+      @Value("${pcap.bucket.prefix}") String pcapBucketPrefix,
       @Value("${parquet.bucket.name}") String parquetBucketName,
       @Value("${pcap.archive.bucket.name}") String archiveBucketName,
       @Value("${pcap.archive.prefix}") String archivePrefix,
@@ -73,6 +75,7 @@ public class ConvertorConfig {
       @Value("${athena.database.name}") String athenaDatabaseName,
       @Value("${athena.table.name}") String athenaTableName
   ) throws IOException {
+    this.pcapBucketPrefix = pcapBucketPrefix;
     this.parquetOutputFolder = parquetOutputFolder;
     this.serverSuffix = serverSuffix;
     this.deletePcapAfterConversion = deletePcapAfterConversion;
@@ -124,6 +127,7 @@ public class ConvertorConfig {
   @PostConstruct
   public void logConfig() {
     logger.info("   ${pcap.bucket.name}             = {}", pcapBucketName);
+    logger.info("   ${pcap.bucket.prefix}           = {}", pcapBucketPrefix);
     logger.info("   ${pcap.folders.newStyle}        = {}", pcapFoldersNewStyle);
     logger.info("   ${pcap.download.folder}         = {}", pcapDownloadFolder);
     logger.info("   ${parquet.output.folder}        = {}", parquetOutputFolder);
@@ -197,5 +201,9 @@ public class ConvertorConfig {
 
   public boolean isPcapFoldersNewStyle() {
     return pcapFoldersNewStyle;
+  }
+
+  public String getPcapBucketPrefix() {
+    return pcapBucketPrefix;
   }
 }

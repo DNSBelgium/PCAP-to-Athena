@@ -145,7 +145,7 @@ public class ConvertorService {
       logger.info(" => listFiles for serverName = {} and day={}", serverName, day);
       String prefix = serverName + config.getServerSuffix() + "/" + day.format(DateTimeFormatter.ofPattern("yyyy'_'MM'_'dd"));
       logger.info("prefix = {}", prefix);
-      List<S3PcapFile> files = downloader.listFilesIn(config.getPcapBucketName(), prefix);
+      List<S3PcapFile> files = downloader.listFilesIn(config.getPcapBucketName(), config.getPcapBucketPrefix() + "/" + prefix);
       for (S3PcapFile file : files) {
         bytes += file.getObjectSummary().getSize();
         Map<String, String> tags = tagger.getTags(file);
@@ -185,7 +185,7 @@ public class ConvertorService {
     logger.info("findPcapFiles: job = {}", job);
     String prefix = job.getPcapPrefix(config.isPcapFoldersNewStyle());
     logger.info("prefix = {}", prefix);
-    List<S3PcapFile> files = downloader.listFilesIn(config.getPcapBucketName(), prefix);
+    List<S3PcapFile> files = downloader.listFilesIn(config.getPcapBucketName(), config.getPcapBucketPrefix() + "/" + prefix);
     logger.info("we found {} pcap files for {}", files.size(), job);
     job.setPcapFiles(files);
   }
