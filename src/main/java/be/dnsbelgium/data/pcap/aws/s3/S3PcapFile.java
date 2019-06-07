@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,8 +57,13 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
 
   // In the future we want to store PCAP (and parquet) files in the following folder structure
   // s3://some-bucket/some-prefix/server=xxxx/year=xxxx/month=xx/day=xx/123_some_filename
-  private final static String REGEX_WITH_PARTITIONS =
-      "(?<prefix>[^/]*/)?server=(?<server>[^/]+)/year=(?<yyyy>\\d{4})/month=(?<mm>\\d{2})/day=(?<dd>\\d{2})/(?<epoch>\\d+)_(?<filenamePart>.*)_DONE";
+  private final static String REGEX_WITH_PARTITIONS = "" +
+      "(?<prefix>[^/]*/)?" +
+      "server=(?<server>[^/]+)" +
+      "/year=(?<yyyy>\\d{4})" +
+      "/month=(?<mm>\\d{2})" +
+      "/day=(?<dd>\\d{2})" +
+      "/(?<epoch>\\d{4}_\\d{2}_\\d{2}_\\d{6})_(?<server2>.+)_(?<interface>[^\\.]+)\\.(?<extension>.*)";
 
   private final static Pattern PATTERN_WITH_PARTITIONS = Pattern.compile(REGEX_WITH_PARTITIONS);
 
@@ -111,19 +118,12 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
       String dd = matcherWithPartitions.group("dd");
       LocalDate date = LocalDate.parse(yyyy + mm + dd, DateTimeFormatter.BASIC_ISO_DATE);
 
-      Instant instant = extractInstance(matcherWithPartitions);
+      // TODO quentinl Check the need to use Instant (iso LocalDateTime) after removing the old pattern
+      Instant instant = extractInstance(matcherWithPartitions.group("epoch"));
 
-      String fileNamePart = matcherWithPartitions.group("filenamePart");
-      Matcher filenameMatcher = NAME_INTERFACE_PATTERN.matcher(fileNamePart);
-      if (filenameMatcher.find()) {
-        String server2 = filenameMatcher.group("server");
-        logger.info("prefix = {}", prefix);
-        logger.info("server = {}", server);
-        logger.info("server2 = {}", server2);
-        iface = filenameMatcher.group("interface");
-        seqNr = filenameMatcher.group("sequenceNr");
-      }
-      return new S3PcapFile(summary, server, fileName, compressed, instant, date, iface, seqNr);
+      iface = matcherWithPartitions.group("interface");
+
+      return new S3PcapFile(summary, server, fileName, compressed, instant, date, iface, null);
 
     } else {
       logger.warn("S3 key {} does not match regex {} nor {} => return null", key, REGEX, REGEX_WITH_PARTITIONS);
@@ -135,6 +135,12 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
     String epoch = matcher.group("epoch");
     long epochSeconds = Integer.parseInt(epoch);
     return Instant.ofEpochSecond(epochSeconds);
+  }
+
+  private static Instant extractInstance(String epoch) {
+    return LocalDateTime
+        .parse(epoch, DateTimeFormatter.ofPattern("yyyy'_'MM'_'dd'_'HHmmss"))
+        .toInstant(ZoneOffset.UTC);
   }
 
   private S3PcapFile(S3ObjectSummary objectSummary, String server, String fileName, boolean compressed, Instant instant, LocalDate date, String iface, String sequenceNr) {

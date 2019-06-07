@@ -25,6 +25,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +43,7 @@ public class S3PcapFileTest {
 
   @Test
   public void testContructor() {
-    String key = "prefix/server=amsterdam1.dns.be/year=2018/month=06/day=01/1527804007_amsterdam1.dns.be.p2p2.pcap4249_DONE";
+    String key = "prefix/server=amsterdam1.dns.be/year=2018/month=06/day=01/2018_06_01_000213_amsterdam1.dns.be_p2p2.pcap";
     S3ObjectSummary summary = new S3ObjectSummary();
     summary.setBucketName("random");
     summary.setKey(key);
@@ -52,7 +55,7 @@ public class S3PcapFileTest {
 
   @Test
   public void testContructorWithoutPrefix() {
-    String key = "server=amsterdam1.dns.be/year=2018/month=06/day=01/1527804007_amsterdam1.dns.be.p2p2.pcap4249_DONE";
+    String key = "server=amsterdam1.dns.be/year=2018/month=06/day=01/2018_06_01_185645_amsterdam1.dns.be_p2p2.pcap";
     S3ObjectSummary summary = new S3ObjectSummary();
     summary.setBucketName("random");
     summary.setKey(key);
@@ -102,7 +105,7 @@ public class S3PcapFileTest {
 
   @Test
   public void sort() {
-    List<S3PcapFile> files =new ArrayList<>();
+    List<S3PcapFile> files = new ArrayList<>();
     S3PcapFile file1 = makeFile("amsterdam1.dns.be/25-12-2017/1527804017_amsterdam1.dns.be.p2p2.pcap0049_DONE.gz");
     S3PcapFile file2 = makeFile("brussels01.dns.be/25-12-2017/1527804001_brussels01.dns.be.p2p2.pcap0049_DONE.gz");
     S3PcapFile file3 = makeFile("amsterdam1.dns.be/25-12-2017/1527804005_amsterdam1.dns.be.p2p2.pcap0049_DONE.gz");
@@ -120,7 +123,7 @@ public class S3PcapFileTest {
 
   @Test
   public void sort2() {
-    List<S3PcapFile> files =new ArrayList<>();
+    List<S3PcapFile> files = new ArrayList<>();
     S3PcapFile file1 = makeFile("amsterdam1.dns.be/25-12-2017/1527804017_amsterdam1.dns.be.p2p2.pcap0008_DONE.gz");
     S3PcapFile file2 = makeFile("amsterdam1.dns.be/25-12-2017/1527804001_amsterdam1.dns.be.em1.pcap0049_DONE.gz");
     S3PcapFile file3 = makeFile("amsterdam1.dns.be/25-12-2017/1527804005_amsterdam1.dns.be.p2p2.pcap0009_DONE.gz");
@@ -141,14 +144,16 @@ public class S3PcapFileTest {
 
   @Test
   public void newFolderStructure() {
-    String key = "prefix/server=dummy1.dns.com/year=2017/month=12/day=25/123_server.be.interface.pcap605_DONE.gz";
+    String key = "prefix/server=dummy1.dns.com/year=2017/month=12/day=25/2017_12_25_012345_server.blabla.be_interface.pcap.gz";
     S3PcapFile file = makeFile(key);
     logger.info("file = {}", file);
     assertEquals(LocalDate.of(2017, 12, 25), file.getDate());
-    assertEquals("123_server.be.interface.pcap605_DONE.gz", file.getFileName());
-    assertEquals(123, file.getInstant().getEpochSecond());
+    assertEquals("2017_12_25_012345_server.blabla.be_interface.pcap.gz", file.getFileName());
+    assertEquals(
+        LocalDateTime.of(file.getDate(), LocalTime.of(01, 23, 45)).toEpochSecond(ZoneOffset.UTC),
+        file.getInstant().getEpochSecond());
     assertEquals("interface", file.getNetworkInterface());
-    assertEquals("605", file.getSequenceNr());
+    assertEquals(null, file.getSequenceNr());
     String improvedKey = file.improvedKey("prefix", new ServerInfo("dummy1.dns.com"));
     assertEquals(key, improvedKey);
     String expected = key
@@ -156,19 +161,6 @@ public class S3PcapFileTest {
         .replace("dummy1.dns.com", "other.server");
     assertEquals(expected, file.improvedKey("new-prefix", new ServerInfo("other.server")));
   }
-
-  @Test
-  public void newFolderStructureNoInterface() {
-    String key = "prefix/server=dummy1.dns.com/year=2017/month=12/day=25/123_server.be.pcap605_DONE.gz";
-    S3PcapFile file = makeFile(key);
-    logger.info("file = {}", file);
-    assertEquals(LocalDate.of(2017, 12, 25), file.getDate());
-    assertEquals("123_server.be.pcap605_DONE.gz", file.getFileName());
-    assertEquals(123, file.getInstant().getEpochSecond());
-    assertNull(file.getNetworkInterface());
-    assertNull(file.getSequenceNr());
-  }
-
 
   @Test
   public void improvedKey() {

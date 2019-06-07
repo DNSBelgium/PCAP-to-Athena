@@ -88,8 +88,8 @@ public class DownloaderTest {
   private File localFile;
 
   private String uncompressedPcapS3Key, compressedPcapS3Key;
-  private final static String UNCOMPRESSED_PCAP_S3_KEY_WITHOUT_PREFIX = "server=serverName/year=2018/month=10/day=30/1540940413_serverName.dns.be.p2p2.pcap2736_DONE";
-  private final static String COMPRESSED_PCAP_S3_KEY_WITHOUT_PREFIX = "server=serverName/year=2018/month=10/day=30/1540940413_serverName.dns.be.p2p2.pcap2736_DONE.gz";
+  private final static String UNCOMPRESSED_PCAP_S3_KEY_WITHOUT_PREFIX = "server=serverName/year=2018/month=10/day=30/2018_10_30_111111_serverName.dns.be_p2p2.pcap";
+  private final static String COMPRESSED_PCAP_S3_KEY_WITHOUT_PREFIX = "server=serverName/year=2018/month=10/day=30/2018_10_30_210001_serverName.dns.be_p2p2.pcap.gz";
 
   @Before
   public void before() throws IOException {
@@ -150,7 +150,7 @@ public class DownloaderTest {
     assertTrue("local file should exist", localFile.exists());
     assertTrue("local file should be a file", localFile.isFile());
     assertTrue("local file should readable", localFile.canRead());
-    assertEquals("1540940413_serverName.dns.be.p2p2.pcap2736_DONE.pcap", localFile.getName());
+    assertEquals("2018_10_30_111111_serverName.dns.be_p2p2.pcap", localFile.getName());
     assertEquals(269, localFile.length());
     assertEquals(downloadFolder.getAbsolutePath(), localFile.getParent());
   }
@@ -174,7 +174,7 @@ public class DownloaderTest {
     assertTrue("local file should exist", localFile.exists());
     assertTrue("local file should be a file", localFile.isFile());
     assertTrue("local file should readable", localFile.canRead());
-    assertEquals("1540940413_serverName.dns.be.p2p2.pcap2736_DONE.gz.pcap.gz", localFile.getName());
+    assertEquals("2018_10_30_210001_serverName.dns.be_p2p2.pcap.gz", localFile.getName());
     assertEquals(downloadFolder.getAbsolutePath(), localFile.getParent());
     assertEquals(205, localFile.length());
   }
