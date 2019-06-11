@@ -7,8 +7,22 @@ pipeline {
       }
     }
     stage('Maxmind') {
+      parallel {
+        stage('Maxmind') {
+          steps {
+            sh './maxmind/download_maxmind_geo_ip_db.sh'
+          }
+        }
+        stage('Libraries SIDN & Athena driver') {
+          steps {
+            sh './libs/download_libs.sh'
+          }
+        }
+      }
+    }
+    stage('Build') {
       steps {
-        sh './maxmind/download_maxmind_geo_ip_db.sh'
+        sh './mnw clean install'
       }
     }
   }
