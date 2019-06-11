@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Libraries SIDN & Athena driver') {
           steps {
-            sh './libs/download_libs.sh'
+            sh './lib/download_libs.sh'
           }
         }
       }
