@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git(url: 'scm:git:git://github.com/Kent1/PCAP-to-Athena.git', branch: 'master')
+        git(url: 'https://github.com/Kent1/PCAP-to-Athena.git', branch: 'master')
       }
     }
     stage('Maxmind') {
