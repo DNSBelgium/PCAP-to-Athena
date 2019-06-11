@@ -22,7 +22,7 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh './mnw clean install'
+        sh './mvnw clean install'
       }
     }
   }
