@@ -22,7 +22,12 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh './mvnw clean install'
+        sh './mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V'
+      }
+    }
+    stage('Unit tests') {
+      steps {
+        sh './mvnw test -B'
       }
     }
   }
