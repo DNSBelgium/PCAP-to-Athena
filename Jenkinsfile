@@ -36,6 +36,8 @@ pipeline {
           sh 'aws sts get-caller-identity'
           sh 'echo $AWS_ACCESS_KEY'
           sh 'echo $AWS_ACCESS_KEY_ID'
+          sh 'env'
+          sh 'aws s3 ls'
           sh './mvnw -Dtest-groups=aws-integration-tests test -B'
         }
       }
