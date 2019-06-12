@@ -54,7 +54,7 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
   // In the future we want to store PCAP (and parquet) files in the following folder structure
   // s3://some-bucket/some-prefix/server=xxxx/year=xxxx/month=xx/day=xx/123_some_filename
   private final static String REGEX_WITH_PARTITIONS = "" +
-      "(?<prefix>[^/]*/)?" +
+      "(?<prefix>.*/)?" +
       "server=(?<server>[^/]+)" +
       "/year=(?<yyyy>\\d{4})" +
       "/month=(?<mm>\\d{2})" +
