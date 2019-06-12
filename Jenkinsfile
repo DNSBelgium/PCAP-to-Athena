@@ -37,7 +37,7 @@ pipeline {
           sh 'echo $AWS_ACCESS_KEY'
           sh 'echo $AWS_ACCESS_KEY_ID'
           sh 'env'
-          sh 'aws s3 ls'
+          sh 'aws s3 ls s3://dnsbelgium-dev-querylogs'
           sh './mvnw -Dtest-groups=aws-integration-tests test -B'
         }
       }
