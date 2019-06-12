@@ -36,4 +36,7 @@ pipeline {
       }
     }
   }
+  environment {
+    AWS_DEFAULT_PROFILE = 'pcap-to-athena'
+  }
 }
