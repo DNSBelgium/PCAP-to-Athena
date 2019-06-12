@@ -34,6 +34,8 @@ pipeline {
       steps {
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-role']]) {
           sh 'aws sts get-caller-identity'
+          sh 'echo $AWS_ACCESS_KEY'
+          sh 'echo $AWS_ACCESS_KEY_ID'
           sh './mvnw -Dtest-groups=aws-integration-tests test -B'
         }
       }
