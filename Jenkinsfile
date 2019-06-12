@@ -32,9 +32,7 @@ pipeline {
     }
     stage('Integration tests') {
       steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-role']]) {
-          sh 'aws sts get-caller-identity'
-        }
+        sh 'aws sts get-caller-identity'
       }
     }
   }
