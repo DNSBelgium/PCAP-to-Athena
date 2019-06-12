@@ -30,5 +30,10 @@ pipeline {
         sh './mvnw test -B'
       }
     }
+    stage('Integration tests') {
+      steps {
+        sh './mvnw -Dtest-groups=aws-integration-tests test -B'
+      }
+    }
   }
 }
