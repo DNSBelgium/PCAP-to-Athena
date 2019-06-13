@@ -38,5 +38,10 @@ pipeline {
 
       }
     }
+    stage('Publish') {
+      steps {
+        sh 'mvn deploy -DskipTests=true -B -U -Prelease'
+      }
+    }
   }
 }
