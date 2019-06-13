@@ -32,7 +32,7 @@ pipeline {
     }
     stage('Integration tests') {
       steps {
-        withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-role']]) {
+        withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'pcap-to-athena-aws-role']]) {
           sh './mvnw -Dtest-groups=aws-integration-tests test -B'
         }
 
