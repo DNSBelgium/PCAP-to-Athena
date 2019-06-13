@@ -43,7 +43,7 @@ public class Tagger {
   public Tagger(AmazonS3 amazonS3) {
     this.amazonS3 = amazonS3;
     logger.info("Current AWS region = {}", amazonS3.getRegionName());
-    logger.info("Current AWS account = {}", amazonS3.getS3AccountOwner().getDisplayName());
+    //logger.info("Current AWS account = {}", amazonS3.getS3AccountOwner().getDisplayName());
   }
 
   public Map<String, String> getTags(S3PcapFile file) {
