@@ -25,7 +25,7 @@ pipeline {
         sh './mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V'
       }
     }
-    stages('Testing') {
+    stage('Testing') {
       stage('Unit tests') {
         steps {
           sh './mvnw test -B'
