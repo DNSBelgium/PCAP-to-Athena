@@ -58,8 +58,8 @@ public class TaggerTest {
 
   private static final Logger logger = getLogger(TaggerTest.class);
 
-  private static final String OBJECT_KEY = "tagging.test.txt";
-  private static final String PCAP_OBJECT_KEY = "taggertest.dns.be/05-05-2018/7777_taggertest.dns.be.eth0.pcap001_DONE.gz";
+  private static final String OBJECT_KEY = "integration-test/tagging.test.txt";
+  private static final String PCAP_OBJECT_KEY = "integration-test/taggertest.dns.be/05-05-2018/7777_taggertest.dns.be.eth0.pcap001_DONE.gz";
 
   @Autowired
   private Tagger tagger;

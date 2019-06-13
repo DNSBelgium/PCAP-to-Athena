@@ -45,7 +45,7 @@ public class Uploader {
   public Uploader(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 amazonS3) {
     this.amazonS3 = amazonS3;
     logger.info("amazonS3.getRegionName() = {}", amazonS3.getRegionName());
-    logger.info("Current AWS account: {}",  amazonS3.getS3AccountOwner().getDisplayName());
+    //logger.info("Current AWS account: {}",  amazonS3.getS3AccountOwner().getDisplayName());
   }
 
   @PostConstruct
