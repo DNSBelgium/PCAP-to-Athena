@@ -45,9 +45,9 @@ pipeline {
     }
     stage('Publish') {
       steps {
-        withCredentials([string(credentialsId: 'Engineering_DNS_Belgium_GPG', variable: 'GPG_SECRET_KEY')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'Engineering_DNS_Belgium_GPG', keyFileVariable: 'GPG_SECRET_KEY', passphraseVariable: 'GPG_PASSPHRASE')]) {
           //sh 'echo $GPG_SECRET_KEY | base64 --decode | gpg --import'
-          sh 'mvn deploy -DskipTests=true -B -U -Prelease'
+          sh 'mvn deploy -DskipTests=true -B -U -Prelease -Dgpg.passphrase=$GPG_PASSPHRASE'
         }
       }
     }
