@@ -44,7 +44,10 @@ pipeline {
     }
     stage('Publish') {
       steps {
-        sh 'mvn deploy -DskipTests=true -B -U -Prelease'
+        withcredentials([string(credentialsId: 'Engineering_DNS_Belgium_GPG', variable: 'GPG_SECRET_KEY')]) {
+          sh 'echo $GPG_SECRET_KEY | base64 --decode | gpg --import'
+          sh 'mvn deploy -DskipTests=true -B -U -Prelease'
+        }
       }
     }
   }
