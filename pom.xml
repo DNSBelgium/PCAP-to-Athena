@@ -53,6 +53,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+	<gpg.keyname>AB9F7DBA</gpg.keyname>
     </properties>
 
     <dependencies>
@@ -402,7 +403,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
