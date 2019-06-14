@@ -27,19 +27,22 @@ pipeline {
     }
     stage('Unit tests') {
       steps {
-        sh './mvnw test -B'
+        sh './mvnw jacoco:prepare-agent test -B'
       }
     }
     stage('Integration tests') {
+      post {
+        success {
+          junit 'target/surefire-reports/**/*.xml'
+
+        }
+
+      }
       steps {
         withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'pcap-to-athena-aws-role']]) {
           sh './mvnw -Dtest-groups=aws-integration-tests test -B'
         }
-      }
-      post {
-        success {
-          junit 'target/surefire-reports/**/*.xml'
-        }
+
       }
     }
     stage('Sonarqube') {
@@ -50,11 +53,12 @@ pipeline {
     stage('Publish') {
       steps {
         configFileProvider([configFile(fileId: 'Engineering_DNS_Belgium_OSSRH_maven_settings', variable: 'MAVEN_SETTINGS')]) {
-          withCredentials([sshUserPrivateKey(credentialsId: 'Engineering_DNS_Belgium_GPG', keyFileVariable: 'GPG_SECRET_KEY', passphraseVariable: 'GPG_PASSPHRASE')]) {
-            //sh 'echo $GPG_SECRET_KEY | base64 --decode | gpg --import'
+          withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'Engineering_DNS_Belgium_GPG', keyFileVariable: 'GPG_SECRET_KEY', passphraseVariable: 'GPG_PASSPHRASE')]) {
             sh 'mvn -s $MAVEN_SETTINGS deploy -DskipTests=true -B -U -Prelease -Dgpg.passphrase=$GPG_PASSPHRASE'
           }
+
         }
+
       }
     }
   }
