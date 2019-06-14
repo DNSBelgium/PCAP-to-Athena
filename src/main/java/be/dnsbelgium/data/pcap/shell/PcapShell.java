@@ -24,18 +24,19 @@ import be.dnsbelgium.data.pcap.aws.s3.Downloader;
 import be.dnsbelgium.data.pcap.aws.s3.S3PcapFile;
 import be.dnsbelgium.data.pcap.aws.s3.Tagger;
 import be.dnsbelgium.data.pcap.aws.s3.Uploader;
-import be.dnsbelgium.data.pcap.convertor.PcapConvertor;
-import be.dnsbelgium.data.pcap.reader.PcapFileReader;
-import be.dnsbelgium.data.pcap.model.ServerInfo;
 import be.dnsbelgium.data.pcap.convertor.ConversionJob;
 import be.dnsbelgium.data.pcap.convertor.ConvertorConfig;
 import be.dnsbelgium.data.pcap.convertor.ConvertorService;
+import be.dnsbelgium.data.pcap.convertor.PcapConvertor;
+import be.dnsbelgium.data.pcap.model.ServerInfo;
+import be.dnsbelgium.data.pcap.reader.PcapFileReader;
 import be.dnsbelgium.data.pcap.utils.FileHelper;
 import be.dnsbelgium.data.pcap.utils.FileSize;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -56,6 +57,7 @@ import static be.dnsbelgium.data.pcap.convertor.ConvertorService.TAG_CONVERSION_
 import static org.slf4j.LoggerFactory.getLogger;
 
 @SuppressWarnings("unused")
+@ConditionalOnProperty(value = "spring.shell.interactive.enabled", havingValue = "true")
 @ShellComponent
 public class PcapShell implements ApplicationContextAware {
 
@@ -89,7 +91,8 @@ public class PcapShell implements ApplicationContextAware {
   @ShellMethod("show current config")
   public void showConfig() {
     logger.info("pcap.bucket.name = {}", config.getPcapBucketName());
-    logger.info("serverNames = {}", config.getServerNames());
+    logger.info("serverNames.include = {}", config.getIncludedServers());
+    logger.info("serverNames.exclude = {}", config.getExcludedServers());
     logger.info("prefix = {}", prefix);
     convertorService.logConfig();
     pcapConvertor.logConfig();
@@ -278,8 +281,10 @@ public class PcapShell implements ApplicationContextAware {
   void processMonthForAllServers(int year, int month) {
     logger.info("Processing all PCAP files of {}/{} for all servers", year, month);
     long pcapBytes = 0;
-    for (String serverName : config.getServerNames()) {
-      pcapBytes += processMonth(year, month, serverName);
+    for (String serverName : config.getIncludedServers()) {
+      if (!config.getExcludedServers().contains(serverName)) {
+        pcapBytes += processMonth(year, month, serverName);
+      }
     }
     logger.info("Total PCAP files processed for {}/{} => {}", year, month, FileSize.friendlySize(pcapBytes));
     logger.info("==================================================");

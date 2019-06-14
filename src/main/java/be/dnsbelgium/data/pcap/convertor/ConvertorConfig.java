@@ -49,7 +49,8 @@ public class ConvertorConfig {
   private final String parquetPrefix;
   private final String parquetRepoName;
   private final String pcapDownloadFolder;
-  private final List<String> serverNames;
+  private final List<String> includedServers;
+  private final List<String> excludedServers;
   private final String athenaDatabaseName;
   private final String athenaTableName;
 
@@ -66,12 +67,13 @@ public class ConvertorConfig {
       @Value("${pcap.folders.newStyle}") boolean pcapFoldersNewStyle,
       @Value("${pcap.download.folder}") String pcapDownloadFolder,
       @Value("${parquet.output.folder}") String parquetOutputFolder,
-      @Value("${server.suffix}")   String serverSuffix,
       @Value("${pcap.delete.after.conversion}")  boolean deletePcapAfterConversion,
       @Value("${parquet.delete.after.upload}") boolean deleteParquetAfterUpload,
       @Value("${parquet.prefix}") String parquetPrefix,
       @Value("${parquet.repo.name}") String parquetRepoName,
-      @Value("${serverNames}") List<String> serverNames,
+      @Value("${servers.suffix}")   String serverSuffix,
+      @Value("${servers.include}") List<String> includedServers,
+      @Value("${servers.exclude}") List<String> excludedServers,
       @Value("${athena.database.name}") String athenaDatabaseName,
       @Value("${athena.table.name}") String athenaTableName
   ) throws IOException {
@@ -86,7 +88,8 @@ public class ConvertorConfig {
     this.archivePrefix = appendTrailingSlash(archivePrefix);
     this.parquetPrefix = appendTrailingSlash(parquetPrefix);
     this.pcapDownloadFolder = pcapDownloadFolder;
-    this.serverNames = serverNames;
+    this.includedServers = includedServers;
+    this.excludedServers = excludedServers;
     this.athenaDatabaseName = athenaDatabaseName;
     this.athenaTableName = athenaTableName;
     this.pcapFoldersNewStyle = pcapFoldersNewStyle;
@@ -187,8 +190,12 @@ public class ConvertorConfig {
     return pcapDownloadFolder;
   }
 
-  public List<String> getServerNames() {
-    return serverNames;
+  public List<String> getIncludedServers() {
+    return includedServers;
+  }
+
+  public List<String> getExcludedServers() {
+    return excludedServers;
   }
 
   public String getAthenaDatabaseName() {

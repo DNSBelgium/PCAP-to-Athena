@@ -113,7 +113,9 @@ public class ConvertorServiceUnitTest {
     localParquetFiles.add(new File(outputFolder, parquet2));
     localParquetFiles.add(new File(outputFolder, parquet3));
 
-    List<String> serverNames = Lists.newArrayList("myserver1", "myserver2");
+    List<String> includedServerNames = Lists.newArrayList("dummy");
+    List<String> excludedServerNames = Lists.newArrayList("excluded");
+    String serverSuffix = ".example.com";
 
     ConvertorConfig config = new ConvertorConfig(
         PCAP_BUCKET,
@@ -124,12 +126,13 @@ public class ConvertorServiceUnitTest {
         true,
         downloadFolder.getAbsolutePath(),
         outputFolder.getAbsolutePath(),
-        "",
         true,
         true,
         PARQUET_PREFIX,
         PARQUET_REPO_NAME,
-        serverNames,
+        serverSuffix,
+        includedServerNames,
+        excludedServerNames,
         ATHENA_DATABASE_NAME,
         ATHENA_TABLE_NAME
     );

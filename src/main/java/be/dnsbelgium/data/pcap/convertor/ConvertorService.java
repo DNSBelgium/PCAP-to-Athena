@@ -137,7 +137,8 @@ public class ConvertorService {
     long totalTODO = 0;
     long totalDONE = 0;
     long totalBusy = 0;
-    for (String serverName : config.getServerNames()) {
+    for (String serverName : config.getIncludedServers()) {
+      if (config.getExcludedServers().contains(serverName)) { continue; }
       long bytes = 0;
       long bytesTODO = 0;
       long bytesDONE = 0;
@@ -169,7 +170,7 @@ public class ConvertorService {
       totalBusy += bytesBusy;
       allFiles.addAll(files);
     }
-    logger.info("Day {} => found {} files from {} servers", day, allFiles.size(), config.getServerNames().size());
+    logger.info("Day {} => found {} files from {} servers", day, allFiles.size(), config.getIncludedServers().size());
     logger.info("Day {} => TODO: {}", day, FileSize.friendlySize(totalTODO));
     logger.info("Day {} => DONE: {}", day, FileSize.friendlySize(totalDONE));
     logger.info("Day {} => BUSY: {}", day, FileSize.friendlySize(totalBusy));
