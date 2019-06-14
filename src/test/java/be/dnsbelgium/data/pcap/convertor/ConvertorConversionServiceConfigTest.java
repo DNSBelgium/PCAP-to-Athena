@@ -20,7 +20,6 @@
 package be.dnsbelgium.data.pcap.convertor;
 
 import be.dnsbelgium.data.pcap.configuration.ConversionServiceConfig;
-import be.dnsbelgium.data.pcap.convertor.ConvertorConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,15 +56,22 @@ public class ConvertorConversionServiceConfigTest {
   public void testConfig() {
     String archive = config.getArchiveBucketName();
     System.out.println("archive = " + archive);
-    System.out.println("serverNames = " + config.getServerNames().size());
-    System.out.println("serverNames = " + config.getServerNames());
-    for (String serverName : config.getServerNames()) {
-      System.out.println("serverName = " + serverName);
-    }
-    assertEquals(3, config.getServerNames().size());
-    assertTrue(config.getServerNames().contains("donald"));
-    assertTrue(config.getServerNames().contains("mickey"));
-    assertTrue(config.getServerNames().contains("pluto"));
+
+    System.out.println("serverNames.include = " + config.getIncludedServers().size());
+    System.out.println("serverNames.include = " + config.getIncludedServers());
+
+    System.out.println("serverNames.exclude = " + config.getExcludedServers().size());
+    System.out.println("serverNames.exclude = " + config.getExcludedServers());
+
+    assertEquals(3, config.getIncludedServers().size());
+    assertTrue(config.getIncludedServers().contains("donald"));
+    assertTrue(config.getIncludedServers().contains("mickey"));
+    assertTrue(config.getIncludedServers().contains("pluto"));
+
+    assertEquals(3, config.getExcludedServers().size());
+    assertTrue(config.getExcludedServers().contains("goofy"));
+    assertTrue(config.getExcludedServers().contains("minnie"));
+    assertTrue(config.getExcludedServers().contains("daisy"));
   }
 
 
