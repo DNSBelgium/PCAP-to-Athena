@@ -42,7 +42,7 @@ pipeline {
         }
       }
     }
-    stage('Integration tests') {
+    stage('Sonarqube') {
       steps {
         sh './mvnw sonar:sonar'
       }
