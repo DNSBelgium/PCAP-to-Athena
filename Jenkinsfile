@@ -27,18 +27,18 @@ pipeline {
     }
     stage('Unit tests') {
       steps {
-        //sh './mvnw test -B'
+        sh 'echo ./mvnw test -B'
       }
     }
     stage('Integration tests') {
       steps {
         withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'pcap-to-athena-aws-role']]) {
-          //sh './mvnw -Dtest-groups=aws-integration-tests test -B'
+          sh 'echo ./mvnw -Dtest-groups=aws-integration-tests test -B'
         }
       }
       post {
         success {
-          //junit 'target/surefire-reports/**/*.xml' 
+          junit 'target/surefire-reports/**/*.xml' 
         }
       }
     }
