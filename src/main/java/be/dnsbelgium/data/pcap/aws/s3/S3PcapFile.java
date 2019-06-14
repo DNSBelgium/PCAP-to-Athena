@@ -105,7 +105,7 @@ public class S3PcapFile implements Comparable<S3PcapFile> {
 
     } else if (matcherWithPartitions.find()) {
 
-      logger.info("PCAP uses new folder structure");
+      logger.debug("PCAP uses new folder structure");
 
       String prefix = matcherWithPartitions.group("prefix");
       String server = matcherWithPartitions.group("server");

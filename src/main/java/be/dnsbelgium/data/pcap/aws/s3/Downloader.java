@@ -161,7 +161,7 @@ public class Downloader {
       boolean include = true;
 
       if (summary.getKey().endsWith("/")) {
-        logger.info("{} is a folder => skip", summary.getKey());
+        logger.debug("{} is a folder => skip", summary.getKey());
         include = false;
       }
       if (is(summary, StorageClass.Glacier)) {
