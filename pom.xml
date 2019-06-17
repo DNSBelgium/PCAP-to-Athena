@@ -53,7 +53,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-	<gpg.keyname>AB9F7DBA</gpg.keyname>
+        <gpg.keyname>AB9F7DBA</gpg.keyname>
     </properties>
 
     <dependencies>
@@ -342,7 +342,7 @@
                         <image>gcr.io/distroless/java:debug</image>
                     </from>
                     <to>
-                        <image>549063153765.dkr.ecr.eu-west-1.amazonaws.com/pcap-processor</image>
+                        <image>549063153765.dkr.ecr.eu-west-1.amazonaws.com/dnsbelgium/pcap-to-athena</image>
                     </to>
                     <container>
                         <mainClass>be.dnsbelgium.data.pcap.PcapToAthenaApplication</mainClass>
