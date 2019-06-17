@@ -61,7 +61,9 @@ pipeline {
         }
         stage('Docker') {
           steps {
-            sh 'echo docker'
+            withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'pcap-to-athena-aws-role-ecr']]) {
+              sh 'echo docker'
+            }
           }
         }
       }
