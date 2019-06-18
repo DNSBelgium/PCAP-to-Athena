@@ -336,16 +336,10 @@
                 <version>3.0.0</version>
                 <configuration>
                     <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <excludeProperties>
+                        <excludeProperty>^git.local.branch.*$</excludeProperty>
+                    </excludeProperties>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>get-the-git-infos</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
