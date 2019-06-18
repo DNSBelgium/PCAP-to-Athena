@@ -27,7 +27,7 @@ pipeline {
     }
     stage('Unit tests') {
       steps {
-        sh './mvnw jacoco:prepare-agent test -B'
+        sh './mvnw jacoco:prepare-agent test -B -Psonar'
       }
     }
     stage('Integration tests') {
@@ -45,7 +45,7 @@ pipeline {
     }
     stage('Sonarqube') {
       steps {
-        sh './mvnw sonar:sonar'
+        sh './mvnw sonar:sonar -Psonar'
       }
     }
     stage('Publish') {
