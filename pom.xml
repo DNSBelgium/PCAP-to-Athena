@@ -53,7 +53,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-	<gpg.keyname>AB9F7DBA</gpg.keyname>
+        <gpg.keyname>AB9F7DBA</gpg.keyname>
     </properties>
 
     <dependencies>
@@ -331,9 +331,27 @@
             </plugin>
 
             <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>1.0.1</version>
+                <version>1.3.0</version>
                 <configuration>
                     <from>
                         <!--by default distroless/java is used which does not include a shell-->
@@ -342,7 +360,10 @@
                         <image>gcr.io/distroless/java:debug</image>
                     </from>
                     <to>
-                        <image>549063153765.dkr.ecr.eu-west-1.amazonaws.com/pcap-processor</image>
+                        <image>549063153765.dkr.ecr.eu-west-1.amazonaws.com/dnsbelgium/pcap-to-athena</image>
+                        <tags>
+                            <tag>${project.version}-${git.commit.id.abbrev}</tag>
+                        </tags>
                     </to>
                     <container>
                         <mainClass>be.dnsbelgium.data.pcap.PcapToAthenaApplication</mainClass>
@@ -428,6 +449,7 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -454,6 +476,7 @@
             </properties>
             <build>
                 <plugins>
+
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
@@ -473,11 +496,13 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
                         <version>3.6.0.1398</version>
                     </plugin>
+
                 </plugins>
             </build>
         </profile>
