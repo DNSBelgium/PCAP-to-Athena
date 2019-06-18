@@ -54,7 +54,7 @@ pipeline {
           steps {
             configFileProvider([configFile(fileId: 'Engineering_DNS_Belgium_OSSRH_maven_settings', variable: 'MAVEN_SETTINGS')]) {
               withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'Engineering_DNS_Belgium_GPG', keyFileVariable: 'GPG_SECRET_KEY', passphraseVariable: 'GPG_PASSPHRASE')]) {
-                sh './mvnw -s $MAVEN_SETTINGS deploy -DskipTests=true -B -U -Prelease -Dgpg.passphrase=$GPG_PASSPHRASE'
+                sh './mvnw -s $MAVEN_SETTINGS deploy -DskipTests=true -Dmaven.install.skip=true -B -U -Prelease -Dgpg.passphrase=$GPG_PASSPHRASE'
               }
             }
           }
