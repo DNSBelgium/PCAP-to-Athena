@@ -19,10 +19,12 @@
 
 package be.dnsbelgium.data.pcap.aws.athena;
 
+import be.dnsbelgium.data.pcap.convertor.ConvertorConfig;
 import be.dnsbelgium.data.pcap.model.ServerInfo;
 import com.simba.athena.jdbc42.DataSource;
 import com.simba.athena.support.LogLevel;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,6 +61,9 @@ public class AthenaTools {
   @Value("${athena.output.location}")
   private String outputLocation;
 
+  @Autowired
+  private ConvertorConfig convertorConfig;
+
   private AthenaStatements statements = new AthenaStatements();
 
   private JdbcTemplate template;
@@ -84,6 +89,9 @@ public class AthenaTools {
     ds.setCustomProperty("Workgroup", workgroup);
     ds.setURL(url);
     template = new JdbcTemplate(ds);
+
+    logger.info("creating Athena table if not exists");
+    createDnsQueryTable(convertorConfig.getAthenaDatabaseName(), convertorConfig.getAthenaTableName(), convertorConfig.getParquetS3Location());
   }
 
   private void setLogLevel() {
