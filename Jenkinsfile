@@ -51,7 +51,7 @@ pipeline {
         }
         stage('Docker') {
           steps {
-            withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'pcap-to-athena-aws-role-ecr']]) {
+            withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'pcap-to-athena-aws-role-ecr-dev']]) {
               sh './mvnw git-commit-id:revision jib:build'
             }
           }
