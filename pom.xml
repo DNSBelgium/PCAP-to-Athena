@@ -355,6 +355,11 @@
                     <excludeProperties>
                         <excludeProperty>^git.local.branch.*$</excludeProperty>
                     </excludeProperties>
+                    <gitDescribe>
+                        <skip>false</skip>
+                        <always>false</always>
+                        <dirty>-dirty</dirty>
+                    </gitDescribe>
                 </configuration>
             </plugin>
 
@@ -363,7 +368,11 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>1.3.0</version>
                 <configuration>
-                    <extraDirectory>${project.basedir}/maxmind/</extraDirectory>
+                    <extraDirectories>
+                        <paths>
+                            <path>${project.basedir}/maxmind/</path>
+                        </paths>
+                    </extraDirectories>
                     <from>
                         <!--by default distroless/java is used which does not include a shell-->
                         <!--But kite-sdk and/or hadoop call chmod and fail with 'Cannot run program "chmod": error=2, No such file or directory'-->
@@ -371,12 +380,11 @@
                         <image>gcr.io/distroless/java:debug</image>
                     </from>
                     <to>
-                        <image>549063153765.dkr.ecr.eu-west-1.amazonaws.com/dnsbelgium/pcap-to-athena</image>
+                        <image>042786531511.dkr.ecr.eu-west-1.amazonaws.com/dnsbelgium/pcap-to-athena</image>
                         <tags>
                             <tag>${project.version}</tag>
                             <tag>${project.version}-${git.commit.id.abbrev}</tag>
                             <tag>${git.commit.id.abbrev}</tag>
-                            <tag>${project.version}-${git.commit.id.abbrev}</tag>
                         </tags>
                     </to>
                     <container>
